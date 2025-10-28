@@ -1,0 +1,124 @@
+{
+  "companies": [
+    {
+      "id": 1,
+      "name": "Aster Labs",
+      "location": "Bengaluru, India",
+      "industry": "Healthcare",
+      "employees": 120,
+      "founded": 2016
+    },
+    {
+      "id": 2,
+      "name": "Blue Horizon",
+      "location": "San Francisco, USA",
+      "industry": "SaaS",
+      "employees": 540,
+      "founded": 2012
+    },
+    {
+      "id": 3,
+      "name": "Cedar Foods",
+      "location": "London, UK",
+      "industry": "Food & Beverage",
+      "employees": 85,
+      "founded": 2018
+    },
+    {
+      "id": 4,
+      "name": "Delta Robotics",
+      "location": "Berlin, Germany",
+      "industry": "Robotics",
+      "employees": 230,
+      "founded": 2015
+    },
+    {
+      "id": 5,
+      "name": "Epsilon Energy",
+      "location": "Mumbai, India",
+      "industry": "Energy",
+      "employees": 980,
+      "founded": 2009
+    },
+    {
+      "id": 6,
+      "name": "Forest Analytics",
+      "location": "Toronto, Canada",
+      "industry": "Data Analytics",
+      "employees": 60,
+      "founded": 2020
+    },
+    {
+      "id": 7,
+      "name": "Gala Fashion",
+      "location": "Milan, Italy",
+      "industry": "Retail",
+      "employees": 310,
+      "founded": 2005
+    },
+    {
+      "id": 8,
+      "name": "Helix Biotech",
+      "location": "Boston, USA",
+      "industry": "Biotech",
+      "employees": 420,
+      "founded": 2010
+    },
+    {
+      "id": 9,
+      "name": "Ion Mobility",
+      "location": "Seoul, South Korea",
+      "industry": "Transportation",
+      "employees": 1500,
+      "founded": 2000
+    },
+    {
+      "id": 10,
+      "name": "Juno Media",
+      "location": "Los Angeles, USA",
+      "industry": "Entertainment",
+      "employees": 240,
+      "founded": 2014
+    },
+    {
+      "id": 11,
+      "name": "Kite Cloud",
+      "location": "Dublin, Ireland",
+      "industry": "Cloud Services",
+      "employees": 760,
+      "founded": 2011
+    },
+    {
+      "id": 12,
+      "name": "Lumen Solar",
+      "location": "Hyderabad, India",
+      "industry": "Renewables",
+      "employees": 95,
+      "founded": 2019
+    },
+    {
+      "id": 13,
+      "name": "Mango Tech",
+      "location": "Singapore",
+      "industry": "Fintech",
+      "employees": 320,
+      "founded": 2013
+    },
+    {
+      "id": 14,
+      "name": "Nimbus Hardware",
+      "location": "Shenzhen, China",
+      "industry": "Hardware",
+      "employees": 2000,
+      "founded": 1998
+    },
+    {
+      "id": 15,
+      "name": "Orbit Education",
+      "location": "Bengaluru, India",
+      "industry": "EdTech",
+      "employees": 110,
+      "founded": 2017
+    }
+  ]
+}

@@ -120,12 +120,8 @@ export default function App() {
         </div>
 
         {loading && (
-          // <div className="text-center py-4 text-slate-500">Loading...</div>
-          <div className="grid gap-5 md:grid-cols-3">
-            {sortedCompanies.map((item, i) => (
-              <Card item={item} key={i} />
-            ))}
-          </div>
+           <div className="text-center py-4 text-slate-500">Loading...</div>
+          
         )}
         {error && <div className="text-center text-red-600 mt-4">{error}</div>}
         {!hasMore && !loading && (

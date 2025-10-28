@@ -3,28 +3,34 @@ import { Building2, MapPin, Users, Calendar } from "lucide-react";
 
 const Card = ({ item }) => {
   return (
-    <div className="bg-white p-4 rounded-2xl shadow-sm hover:shadow-md transition duration-300">
-      <h2 className="text-lg font-semibold text-slate-800 mb-2">{item.name}</h2>
+    <div className="bg-white/80 backdrop-blur-md border border-slate-200 p-5 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+      <div className="flex flex-col h-full justify-between">
+        <div>
+          <h1 className="text-lg font-semibold text-slate-900 mb-5 text-center">
+            {item.name}
+          </h1>
+          <p className="text-sm text-slate-500 flex items-center gap-2 mb-3">
+            <Building2 className="w-4 h-4 text-slate-400" />
+            {item.industry || "N/A"}
+          </p>
 
-      <div className="flex items-center text-slate-600 text-sm mb-1">
-        <Building2 className="w-4 h-4 mr-2 text-slate-500" />
-        {item.industry}
-      </div>
+          <p className="text-sm text-slate-500 flex items-center gap-2">
+            <MapPin className="w-4 h-4 text-slate-400" />
+            {item.city}, {item.country}
+          </p>
+        </div>
 
-      <div className="flex items-center text-slate-600 text-sm mb-1">
-        <MapPin className="w-4 h-4 mr-2 text-slate-500" />
-        {item.city}, {item.country}
-      </div>
-
-      <div className="flex items-center text-slate-600 text-sm mt-3 gap-4">
-        <span className="flex items-center">
-          <Users className="w-4 h-4 mr-1 text-slate-500" />
-          {item.employees?.toLocaleString() || "-"}
-        </span>
-        <span className="flex items-center">
-          <Calendar className="w-4 h-4 mr-1 text-slate-500" />
-          {item.founded}
-        </span>
+        {/* Footer */}
+        <div className="flex items-center justify-between mt-5 text-slate-600 text-sm border-t border-slate-100 pt-3">
+          <span className="flex items-center gap-1.5">
+            <Users className="w-4 h-4 text-slate-400" />
+            {item.employees?.toLocaleString() || "-"}
+          </span>
+          <span className="flex items-center gap-1.5">
+            <Calendar className="w-4 h-4 text-slate-400" />
+            {item.founded || "-"}
+          </span>
+        </div>
       </div>
     </div>
   );

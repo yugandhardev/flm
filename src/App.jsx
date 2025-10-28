@@ -1,10 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  useCallback,
-  useRef,
-  useMemo,
-} from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import Card from "./components/Card";
 import FilterSection from "./components/FilterSection";
 import useInfiniteScroll from "./util/useInfiniteScroll";
@@ -18,8 +12,9 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [hasMore, setHasMore] = useState(true);
+  const [isResetting, setIsResetting] = useState(false);
 
-  // filters
+  // Filters
   const [filters, setFilters] = useState({
     name: "",
     country: "",
@@ -27,82 +22,79 @@ export default function App() {
     sortOrder: "",
   });
 
-  const isFetchingRef = useRef(false);
-  const cacheRef = useRef({});
-
-  // handle filter changes
-  const handleFilters = ({ name, value }) => {
-    setFilters((prev) => ({ ...prev, [name]: value }));
-  };
-
+  // Debounced filter updates
   const debouncedFilters = useDebounce(filters, 500);
 
+  // Handle filter changes
+  const handleFilters = useCallback(({ name, value }) => {
+    setFilters((prev) => ({ ...prev, [name]: value }));
+  }, []);
+
+  // Reset when filters change
   useEffect(() => {
+    setIsResetting(true);
     setCompanies([]);
     setPage(1);
     setHasMore(true);
+    setLoading(false);
   }, [debouncedFilters]);
 
   useEffect(() => {
-    isFetchingRef.current = false;
-  }, [page]);
+    const fetchCompanies = async () => {
+      setLoading(true);
+      setError(null);
 
-  const fetchCompanies = useCallback(async () => {
-    if (isFetchingRef.current) return;
-    isFetchingRef.current = true;
-    setLoading(true);
-    setError(null);
+      try {
+        const { name, country, industry } = debouncedFilters;
+        const params = new URLSearchParams({
+          page,
+          limit: 10,
+          ...(name && { name }),
+          ...(country && { country }),
+          ...(industry && { industry }),
+        });
 
-    try {
-      const { name, country, industry } = debouncedFilters;
-      const params = new URLSearchParams({
-        page,
-        limit: 10,
-        ...(name && { name }),
-        ...(country && { country }),
-        ...(industry && { industry }),
-      });
-      const cacheKey = params.toString();
-      if (cacheRef.current[cacheKey]) {
-        return setCompanies((prev) => [...prev, ...cacheRef.current[cacheKey]]);
+        const res = await fetch(`${API_BASE}/companies?${params.toString()}`);
+        if (!res.ok) throw new Error("Failed to fetch companies");
+
+        const data = await res.json();
+
+        if (data.length === 0) setHasMore(false);
+        else {
+          setCompanies((prev) => [...prev, ...data]);
+        }
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+        setIsResetting(false);
       }
-      const res = await fetch(`${API_BASE}/companies?${cacheKey}`);
-      if (!res.ok) throw new Error("Failed to fetch companies");
+    };
 
-      const data = await res.json();
-      if (data.length === 0) setHasMore(false);
-      setCompanies((prev) => [...prev, ...data]);
-      cacheRef.current[cacheKey] = data;
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-      isFetchingRef.current = false;
-    }
-  }, [debouncedFilters, page]);
-
-  // Call fetch whenever page or filters change
-  useEffect(() => {
     fetchCompanies();
-  }, [fetchCompanies]);
+  }, [page, debouncedFilters]);
 
-  // Infinite scroll observer
+  const onLoadMore = useCallback(() => {
+    if (hasMore && !loading) {
+      setPage((prev) => prev + 1);
+    }
+  }, [hasMore, loading]);
+
   const { lastElementRef } = useInfiniteScroll({
     loading,
     hasMore,
     error,
-    onLoadMore: () => setPage((prev) => prev + 1),
+    isResetting,
+    onLoadMore,
   });
 
-  // Memoized sorting (only runs when data or sort order changes)
   const sortedCompanies = useMemo(() => {
     if (!filters.sortOrder) return companies;
-    const sorted = [...companies].sort((a, b) =>
+    return [...companies].sort((a, b) =>
       filters.sortOrder === "asc"
         ? a.name.localeCompare(b.name)
         : b.name.localeCompare(a.name)
     );
-    return sorted;
   }, [companies, filters.sortOrder]);
 
   return (
@@ -115,22 +107,25 @@ export default function App() {
         {/* Filters */}
         <FilterSection filters={filters} handleFilters={handleFilters} />
 
-        {/* Companies */}
         {sortedCompanies.length === 0 && !loading && (
           <div className="text-center text-slate-500 mt-10">
             No companies found.
           </div>
         )}
 
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-5 md:grid-cols-3">
           {sortedCompanies.map((item, i) => (
             <Card item={item} key={i} />
           ))}
         </div>
 
-        {/* Load states */}
         {loading && (
-          <div className="text-center py-4 text-slate-500">Loading...</div>
+          // <div className="text-center py-4 text-slate-500">Loading...</div>
+          <div className="grid gap-5 md:grid-cols-3">
+            {sortedCompanies.map((item, i) => (
+              <Card item={item} key={i} />
+            ))}
+          </div>
         )}
         {error && <div className="text-center text-red-600 mt-4">{error}</div>}
         {!hasMore && !loading && (
@@ -139,8 +134,6 @@ export default function App() {
           </div>
         )}
 
-        {/* Sentinel */}
-        {/* <div ref={lastElementRef} style={{ height: "20px" }} /> */}
         <div ref={lastElementRef} className="h-10 bg-transparent" />
       </div>
     </div>

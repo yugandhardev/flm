@@ -4,33 +4,45 @@ export default function useInfiniteScroll({
   loading,
   hasMore,
   error,
+  isResetting,
   onLoadMore,
 }) {
   const observerRef = useRef(null);
 
   const lastElementRef = useCallback(
     (node) => {
-      if (loading || error) return;
+      if (loading || error || !hasMore || isResetting) return;
 
       if (observerRef.current) observerRef.current.disconnect();
 
       observerRef.current = new IntersectionObserver(
         (entries) => {
-          if (entries[0].isIntersecting && hasMore) {
+          const first = entries[0];
+          if (first.isIntersecting && hasMore && !loading && !isResetting) {
             onLoadMore();
           }
         },
-        { threshold: 1.0 }
-      ); // fully in view
+        {
+          threshold: 0.5,
+          rootMargin: "200px",
+        }
+      );
 
       if (node) observerRef.current.observe(node);
     },
-    [loading, hasMore, onLoadMore, error]
+    [loading, hasMore, onLoadMore, error, isResetting]
   );
 
   useEffect(() => {
     return () => observerRef.current?.disconnect();
   }, []);
+
+  //When reset starts, disconnect observer immediately
+  useEffect(() => {
+    if (isResetting && observerRef.current) {
+      observerRef.current.disconnect();
+    }
+  }, [isResetting]);
 
   return { lastElementRef };
 }

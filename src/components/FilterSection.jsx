@@ -1,5 +1,4 @@
-// src/components/Filters.jsx
-import React from "react";
+import React, { memo } from "react";
 
 const FilterSection = ({ filters, handleFilters }) => {
   return (
@@ -42,4 +41,4 @@ const FilterSection = ({ filters, handleFilters }) => {
   );
 };
 
-export default FilterSection;
+export default memo(FilterSection);
